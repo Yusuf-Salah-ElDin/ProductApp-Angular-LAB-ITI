@@ -7,7 +7,9 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "standalone": false
+          "standalone": false,
+          "prefix": "app",
+          "type": "component"
         },
         "@schematics/angular:directive": {
           "standalone": false
@@ -29,12 +31,14 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              // {
+              //   "glob": "**/*",
+              //   "input": "public"
+              // }
+              "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "server": "src/main.server.ts",
@@ -91,10 +95,11 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              // {
+              //   "glob": "**/*",
+              //   "input": "public"
+              // }
+              "src/assets"
             ],
             "styles": [
               "src/styles.css"
@@ -103,5 +108,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "cf3b10bc-b199-4329-a59b-d7a8065189d7"
   }
 }
