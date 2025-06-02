@@ -36,11 +36,4 @@ export class ProductsComponent {
     this.displayValues = { ...this.filterValues };
   }
 
-  getStockClass(stock: number): string {
-    if (stock < 20) return 'text-danger';
-    if (stock < 40) return 'text-warning';
-    return 'text-success';
-  }
-
-
 }
