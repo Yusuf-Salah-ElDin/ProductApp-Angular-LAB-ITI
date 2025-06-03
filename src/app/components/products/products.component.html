@@ -1,92 +1,51 @@
-<div class="container my-5">
-  <h3 class="text-center text-success">Our Aromery</h3>
-  <p class="text-center bg-success text-white p-2 rounded">
-    Total Products: {{ products.length }}
-  </p>
+<div class="container my-4">
 
-
-<!-- Filter Form -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5>Filter Products</h5>
+  <!--Filter Section-->
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <input [(ngModel)] = "titleFilter" class="form-control" placeholder="Filter By Title"/>
     </div>
-    <div class="card-body">
-      <form class="row g-3">
-        <div class="col-md-4">
-          <label for="categoryFilter" class="form-label">Category</label>
-          <select class="form-select" id="categoryFilter"
-                  [(ngModel)]="filterValues.category"
-                  name="category"
-                  (change)="updateFilterDisplay()">
-            <option value="">All</option>
-            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label for="titleFilter" class="form-label">Product Title</label>
-          <input type="text" class="form-control" id="titleFilter"
-                 placeholder="Search by title..."
-                 [(ngModel)]="filterValues.title"
-                 name="title"
-                 (input)="updateFilterDisplay()">
-        </div>
-        <div class="col-md-4">
-          <label for="priceFilter" class="form-label">Max Price ($)</label>
-          <input type="number" class="form-control" id="priceFilter"
-                 placeholder="Enter max price"
-                 [(ngModel)]="filterValues.maxPrice"
-                 name="maxPrice"
-                 (input)="updateFilterDisplay()">
-        </div>
-        <div class="col-12">
-          <button type="button" class="btn btn-success w-100">Apply</button>
-        </div>
-      </form>
+
+    <div class="col-md-3">
+      <input [(ngModel)] = "priceFilter" class="form-control" type="number" placeholder="Max Price"/>
+    </div>
+
+    <div class="col-md-3">
+      <select [(ngModel)] = "selectedCategory" class="form-select">
+        <option value="">All Categories</option>
+        <option *ngFor = "let cat of categories" [value]="cat.slug">{{ cat.name }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <button class="btn btn-secondary w-100" (click)="resetFilters()">Reset Filters</button>
     </div>
   </div>
 
-  <!-- Current Filter Values Display -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <h6>Current Filter Values</h6>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-4">
-          <strong>Category:</strong> {{ displayValues.category || 'All' }}
-        </div>
-        <div class="col-md-4">
-          <strong>Title Search:</strong> {{ displayValues.title || 'None' }}
-        </div>
-        <div class="col-md-4">
-          <strong>Max Price:</strong> {{ displayValues.maxPrice || 'None' }}
-        </div>
-      </div>
-    </div>
+  <!--Status Messages-->
+  <div *ngIf="loading" class="text-center text-muted mb-3">
+    LOADING...
   </div>
-<!----------------------------------------------------------------------------------------------->
 
+  <!--here i am using custom pipe named productFilter that displays products array but only the filtered based on arg1:arg2:arg3:...-->
+  <div *ngIf="!loading && (products | productFilter:titleFilter:priceFilter:selectedCategory).length===0" class="text-center text-danger">
+    NO PRODUCTS FOUND.
+  </div>
+
+  <!--Products Card-->
   <div class="row">
-    <div
-      class="col-lg-3 col-md-4 col-sm-6 mb-4"
-      *ngFor="let product of products"
-    >
+    <div class="col-md-4 mb-4" *ngFor="let product of products | productFilter:titleFilter:priceFilter:selectedCategory">
       <div class="card h-100 shadow-sm">
-        <img
-          [src]="'assets/images/' + product.image"
-          class="card-img-top"
-          alt="{{ product.title }}"
-        />
+        <img [src]="product.thumbnail || 'https://via.placeholder.com/300x200?text=No+Image'"
+        class="card-img-top"
+        [alt]="product.title">
         <div class="card-body">
-          <h5 class="card-title">{{ product.title }}</h5>
-          <span class="badge bg-secondary">{{ product.category }}</span>
-          <p class="mt-2 mb-1 text-success fw-bold">
-            Price: £{{ product.price }}
-          </p>
-          <p class="mb-0 text-muted">Stock: {{ product.stock }} units</p>
-        </div>
-        <div class="card-footer text-center">
-          <button class="btn btn-success btn-sm w-100">Add to Cart</button>
+          <h5 class="card-title">{{product.title}}</h5>
+          <span class="badge bg-primary">{{product.category}}</span>
+          <p class="text-success fw-bold my-2">£{{product.price}}</p>
+          <p class="text-muted">{{ product.description }}</p>
+          <!--here is the ratingStars custom pipe to show the rating as stars-->
+          <p class="text-warning">Rating: {{ product.rating | ratingStars }}</p>
         </div>
       </div>
     </div>

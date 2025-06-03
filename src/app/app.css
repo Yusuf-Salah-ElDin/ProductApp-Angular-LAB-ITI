@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center; /* Horizontally center the image */
   align-items: center; /* Vertically center the image (optional) */
-  padding-left: 200px; /* Adjust left padding as desired */
-  padding-right: 200px; /* Adjust right padding as desired */
+  padding-left: 25px; /* Adjust left padding as desired */
+  padding-right: 25px; /* Adjust right padding as desired */
 }
 
 .banner img {

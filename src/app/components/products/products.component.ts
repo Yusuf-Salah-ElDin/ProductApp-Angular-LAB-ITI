@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ProductService } from '../../services/product'; // 👈 adjust the relative path
 
 @Component({
   selector: 'app-products',
@@ -6,34 +7,42 @@ import { Component } from '@angular/core';
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
-export class ProductsComponent {
-  
+export class ProductsComponent implements OnInit{
 
-  products = [
-    {id: 1, title: 'Arabian Sword', stock: 25, category: 'Swords', price: 2000, image: 'arabian-sword.jpg'},
-    {id: 1, title: 'Indian Sword', stock: 25, category: 'Swords', price: 1500, image: 'indian-sword.jpg'},
-    {id: 1, title: 'Arabian Armour', stock: 25, category: 'Armours', price: 6000, image: 'arabian-armour.jpg'},
-    {id: 1, title: 'Crusade Armour', stock: 25, category: 'Armours', price: 5800, image: 'crusade-armour.jpg'},
-    {id: 1, title: 'Arabian Horse', stock: 25, category: 'Horses', price: 9000, image: 'arabian-horse.jpg'},
-    {id: 1, title: 'Crusade Horse', stock: 25, category: 'Horses', price: 8500, image: 'crusade-horse.jpg'}
-  ];
+  products: any[] = [];
+  categories: any[] = [];
+  loading: boolean = true;
 
-  categories: string[] = ['Swords', 'Armours', 'Horses'];
+  // filter 
+  titleFilter: string = "";
+  priceFilter: number | null = null;
+  selectedCategory: string = "";
 
-  filterValues = {
-    category: '',
-    title: '',
-    maxPrice: null as number | null
-  };
+  constructor(private productService: ProductService) {}
 
-  displayValues = {
-    category: '',
-    title: '',
-    maxPrice: null as number | null
-  };
-
-  updateFilterDisplay(): void {
-    this.displayValues = { ...this.filterValues };
+  ngOnInit(): void {
+      this.productService.getProducts().subscribe({
+        next: (res) => {
+          this.products = res.products;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error("error fetching products", err);
+          this.loading = false;
+        }
+      });
+      this.productService.getCategories().subscribe({
+        next: (res) => {
+          this.categories = res;
+        },
+        error: (err) => {
+          console.error("Error Fetching Categories");
+        }
+      });
   }
-
+  resetFilters(): void {
+    this.titleFilter = "";
+    this.priceFilter = null;
+    this.selectedCategory = "";
+  }
 }
